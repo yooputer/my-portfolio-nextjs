@@ -1,60 +1,102 @@
 import { Client } from '@notionhq/client';
 import { Suspense } from 'react'
+import ProfileSection from '@/app/_components/ProfileSection';
+import ContactSection from '@/app/_components/ContactSection';
+import Link from 'next/link';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { MDXRemote } from 'next-mdx-remote/rsc';
+import remarkGfm from 'remark-gfm';
+import rehypeSanitize from 'rehype-sanitize';
+import rehypePrettyCode from 'rehype-pretty-code'; 
+import withSlugs from 'rehype-slug';
+import withToc from '@stefanprobst/rehype-extract-toc';
+import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
+import { compile } from '@mdx-js/mdx';
+import { getAboutMeContent } from '@/lib/notion';
+import { Metadata } from 'next';
 
-const notionClient = new Client({ 
-  auth: process.env.NOTION_TOKEN 
-})
-
-export default function Home() {
-  return (
-    <main className="p-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">내 포트폴리오</h1>
-          <p className="text-gray-600">Notion에서 가져온 최신 포트폴리오입니다.</p>
-        </div>
-        
-        <Suspense fallback={
-          <div className="bg-gray-50 p-6 rounded-lg animate-pulse">
-            <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-          </div>
-        }>
-          <NotionContent />
-        </Suspense>
-      </div>
-    </main>
-  )
+interface TocEntry {
+  value: string;
+  depth: number;
+  id?: string;
+  children?: Array<TocEntry>;
 }
 
-async function NotionContent() {
-  try {
-    if (!process.env.NOTION_PAGE_ID) {
-      throw new Error('NOTION_PAGE_ID가 설정되지 않았습니다.')
-    }
-    if (!process.env.NOTION_TOKEN) {
-      throw new Error('NOTION_TOKEN이 설정되지 않았습니다.')
-    }
-    
-    // const page = await notionClient.pages.retrieve({ page_id: process.env.NOTION_PAGE_ID });
-    const block: any = await notionClient.blocks.retrieve({ block_id: '2019f46ee56780bd95e5db79f2ada592' });
+function TableOfContentsLink({ item }: { item: TocEntry }) {
+  return (
+    <div className="space-y-2">
+      <Link
+        key={item.id}
+        href={`#${item.id}`}
+        className={`hover:text-foreground text-muted-foreground block font-medium transition-colors`}
+      >
+        {item.value}
+      </Link>
+      {item.children && item.children.length > 0 && (
+        <div className="space-y-2 pl-4">
+          {item.children.map((subItem) => (
+            <TableOfContentsLink key={subItem.id} item={subItem} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
-    return (
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <pre className="bg-gray-50 p-4 rounded-lg overflow-auto text-black">
-          { block[block.type].rich_text[0].plain_text}
-        </pre>
+export default async function AboutMe() {
+  const { markdown } = await getAboutMeContent();
+
+  const { data } = await compile(markdown, {
+    rehypePlugins: [
+      withSlugs,
+      rehypeSanitize,
+      withToc,
+      withTocExport,
+    ],
+  });
+
+  return (
+    <div className="container py-6 md:py-8 lg:py-12">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-[240px_1fr_240px] md:gap-8">
+        {/* 왼쪽 사이드바 */}
+        <div className="hidden md:block">
+          <div className="sticky top-16">
+            <div className="bg-muted/60 space-y-4 rounded-lg p-6 backdrop-blur-sm">
+
+              <h3 className="text-lg font-semibold">About Me</h3>
+
+              <nav className="space-y-3 text-sm">
+                {data?.toc?.map((item) => <TableOfContentsLink key={item.id} item={item} />)}
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        {/* 메인 컨텐츠 */}
+        <div>
+          <div className="prose prose-neutral dark:prose-invert prose-headings:scroll-mt-[var(--header-height)] max-w-none [&>h1:first-of-type]:hidden">
+            <MDXRemote
+              source={markdown}
+              options={{
+                mdxOptions: {
+                  remarkPlugins: [remarkGfm],
+                  rehypePlugins: [withSlugs, rehypeSanitize, rehypePrettyCode],
+                },
+              }}
+            />
+          </div>
+          <Separator className="my-16" />
+        </div>
+
+        {/* 오른쪽 사이드바 */}
+        <div className="hidden md:block">
+          <div className="top-4 space-y-6">
+            <ProfileSection />
+            <ContactSection />
+          </div>
+        </div>
       </div>
-    )
-  } catch (error) {
-    console.error('Notion 페이지 로딩 중 에러 발생:', error)
-    return (
-      <div className="bg-red-50 p-4 rounded-lg">
-        <h2 className="text-xl font-bold text-red-600 mb-2">데이터를 불러오는 중 문제가 발생했습니다</h2>
-        <p className="text-red-800">
-          {error instanceof Error ? error.message : '알 수 없는 에러가 발생했습니다.'}
-        </p>
-      </div>
-    )
-  }
+    </div>
+  );
 }
