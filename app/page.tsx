@@ -14,6 +14,7 @@ import withToc from '@stefanprobst/rehype-extract-toc';
 import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import { compile } from '@mdx-js/mdx';
 import { getAboutMeContent } from '@/lib/notion';
+import { removeEmojis } from '@/lib/strings'
 import { Metadata } from 'next';
 
 interface TocEntry {
@@ -35,9 +36,17 @@ function TableOfContentsLink({ item }: { item: TocEntry }) {
       </Link>
       {item.children && item.children.length > 0 && (
         <div className="space-y-2 pl-4">
-          {item.children.map((subItem) => (
-            <TableOfContentsLink key={subItem.id} item={subItem} />
-          ))}
+          {item.children
+              .map((subItem) => {
+                return {
+                  ...subItem,
+                  value: removeEmojis(subItem.value)
+                }
+              })
+              .map((subItem: TocEntry) => (
+                  <TableOfContentsLink key={subItem.id} item={subItem} />)
+              )
+          }
         </div>
       )}
     </div>
