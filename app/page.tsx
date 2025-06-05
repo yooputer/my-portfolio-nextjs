@@ -1,21 +1,16 @@
-import { Client } from '@notionhq/client';
-import { Suspense } from 'react'
 import ProfileSection from '@/app/_components/ProfileSection';
 import ContactSection from '@/app/_components/ContactSection';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import rehypeSanitize from 'rehype-sanitize';
-import rehypePrettyCode from 'rehype-pretty-code'; 
 import withSlugs from 'rehype-slug';
 import withToc from '@stefanprobst/rehype-extract-toc';
 import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import { compile } from '@mdx-js/mdx';
 import { getAboutMeContent } from '@/lib/notion';
 import { removeEmojis } from '@/lib/strings'
-import { Metadata } from 'next';
 
 interface TocEntry {
   value: string;
@@ -90,7 +85,7 @@ export default async function AboutMe() {
               options={{
                 mdxOptions: {
                   remarkPlugins: [remarkGfm],
-                  rehypePlugins: [withSlugs, rehypeSanitize, rehypePrettyCode],
+                  rehypePlugins: [withSlugs, rehypeSanitize],
                 },
               }}
             />
