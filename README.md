@@ -9,6 +9,7 @@ NOTION_TOKEN=<Notion Api Key>
 NOTION_ABOUTME_PAGE_ID=<소개페이지 ID>
 NEXT_PUBLIC_SITE_URL=<포트폴리오 링크>
 NOTION_DATABASE_ID=<데이터베이스 ID>
+NOTION_PROJECT_DATABASE_ID=<프로젝트 데이터베이스 ID>
 ```
 
 ##### npm install

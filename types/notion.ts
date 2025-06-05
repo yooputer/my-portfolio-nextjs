@@ -9,3 +9,17 @@ export interface PageDetail {
     modifiedDate?: string;
     slug: string;
 }
+
+export interface ProjectListItem {
+    id: string;
+    title: string;
+    coverImage?: string;
+    skills: SkillTag[];
+    slug: string;
+}
+
+export interface SkillTag {
+    id: string;
+    name: string;
+    color?: string;
+}
