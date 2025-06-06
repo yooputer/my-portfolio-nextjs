@@ -16,6 +16,7 @@ export interface ProjectListItem {
     coverImage?: string;
     skills: SkillTag[];
     slug: string;
+    description?: string;
 }
 
 export interface SkillTag {

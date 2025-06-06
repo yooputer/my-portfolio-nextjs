@@ -60,6 +60,7 @@ function convertToProjectListItem(page: PageObjectResponse): ProjectListItem {
     title: properties.Name.type === 'title' ? (properties.Name.title[0]?.plain_text ?? '') : '',
     coverImage: getCoverImage(page.cover),
     skills: getSkillTags(page.properties),
+    description: properties.description.type === 'rich_text' ? (properties.description.rich_text[0]?.plain_text ?? '') : '',
     slug: properties.slug.type === 'rich_text' ? (properties.slug.rich_text[0]?.plain_text ?? '') : '',
   };
 }
