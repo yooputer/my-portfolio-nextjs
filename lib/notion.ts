@@ -9,15 +9,22 @@ export const notion = new Client({
 });
 const n2m = new NotionToMarkdown({ notionClient: notion });
 
-export const getAboutMeContent = async (): Promise<{
+export const getContentByPageId = async (pageId: string): Promise<{
   markdown: string;
 }> => {
-  const mdBlocks = await n2m.pageToMarkdown(process.env.NOTION_ABOUTME_PAGE_ID || '');
+  const mdBlocks = await n2m.pageToMarkdown(pageId);
   const { parent } = n2m.toMarkdownString(mdBlocks);
 
   return {
     markdown: parent,
   };
+};
+
+
+export const getAboutMeContent = async (): Promise<{
+  markdown: string;
+}> => {
+  return getContentByPageId(process.env.NOTION_ABOUTME_PAGE_ID || '');
 };
 
 interface MultiSelect {
