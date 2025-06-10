@@ -24,3 +24,10 @@ export interface SkillTag {
     name: string;
     color?: string;
 }
+
+export interface TocEntry {
+    value: string;
+    depth: number;
+    id?: string;
+    children?: Array<TocEntry>;
+}
