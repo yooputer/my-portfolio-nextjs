@@ -18,8 +18,8 @@ export default function Header() {
             <Link href="/projects" className="hover:text-primary font-medium">
               프로젝트
             </Link>
-            <Link href="/about" prefetch={false} className="hover:text-primary font-medium">
-              방명록
+            <Link href="/skills" prefetch={false} className="hover:text-primary font-medium">
+              기술
             </Link>
           </nav>
 

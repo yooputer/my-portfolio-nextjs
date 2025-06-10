@@ -27,6 +27,12 @@ export const getAboutMeContent = async (): Promise<{
   return getContentByPageId(process.env.NOTION_ABOUTME_PAGE_ID || '');
 };
 
+export const getSkillsContent = async (): Promise<{
+  markdown: string;
+}> => {
+  return getContentByPageId(process.env.NOTION_SKILLS_PAGE_ID || '');
+};
+
 interface MultiSelect {
   id: string;
   name: string;

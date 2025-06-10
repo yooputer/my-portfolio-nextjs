@@ -1,0 +1,64 @@
+import { Separator } from '@/components/ui/separator';
+import { MDXRemote } from 'next-mdx-remote/rsc';
+import remarkGfm from 'remark-gfm';
+import rehypeSanitize from 'rehype-sanitize';
+import withSlugs from 'rehype-slug';
+import withToc from '@stefanprobst/rehype-extract-toc';
+import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
+import { compile } from '@mdx-js/mdx';
+import { getSkillsContent } from '@/lib/notion';
+import TableOfContentsLink from '../_components/TableOfContentLink';
+
+export default async function AboutMe() {
+  const { markdown } = await getSkillsContent();
+
+  const { data } = await compile(markdown, {
+    rehypePlugins: [
+      withSlugs,
+      rehypeSanitize,
+      withToc,
+      withTocExport,
+    ],
+  });
+
+  return (
+    <div className="container py-6 md:py-8 lg:py-12">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-[240px_1fr_240px] md:gap-8">
+        {/* 왼쪽 사이드바 */}
+        <div className="hidden md:block">
+          <div className="sticky top-16">
+          </div>
+        </div>
+
+        {/* 메인 컨텐츠 */}
+        <div>
+          <div className="prose prose-neutral dark:prose-invert prose-headings:scroll-mt-[var(--header-height)] max-w-none [&_code]:bg-[rgba(135,131,120,.15)] [&_code]:text-red-400 [&_code]:rounded-sm [&_code]:px-2 [&_code]:py-1 [&_code]:before:content-none [&_code]:after:content-none">
+            <MDXRemote
+              source={markdown}
+              options={{
+                mdxOptions: {
+                  remarkPlugins: [remarkGfm],
+                  rehypePlugins: [withSlugs, rehypeSanitize],
+                },
+              }}
+            />
+          </div>
+          <Separator className="my-16" />
+        </div>
+
+        {/* 오른쪽 사이드바 */}
+        <div className="hidden md:block">
+          <div className="sticky top-16">
+            <div className="bg-muted/60 space-y-4 rounded-lg p-6 backdrop-blur-sm">
+              <h3 className="text-lg font-semibold">Skills</h3>
+
+              <nav className="space-y-3 text-sm">
+                {data?.toc?.map((item) => <TableOfContentsLink key={item.id} item={item} />)}
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
