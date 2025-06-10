@@ -1,14 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Megaphone, BookOpen, HandshakeIcon } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
 const contactItems = [
   {
-    icon: HandshakeIcon,
-    title: '채용 문의',
+    icon: Mail,
+    title: 'Email',
     description: '',
     mailto: {
       email: 'yooputer@gmail.com',
-      subject: '[채용] 문의',
+      subject: '문의',
       body: '문의 종류:\n문의 내용:',
     },
   },
@@ -17,7 +17,7 @@ export default function ContactSection() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>문의하기</CardTitle>
+        <CardTitle>Contact Me</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
