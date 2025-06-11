@@ -1,4 +1,4 @@
-import { getSkills } from '@/lib/notion';
+import { getSkills } from '@/lib/apis/skills';
 import { SkillItem } from "@/types/skills";
 
 function SkillCard({ item }: { item: SkillItem }) {

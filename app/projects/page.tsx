@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
-import { getProjectListByCategory } from '@/lib/notion';
+import { getProjectListByCategory } from '@/lib/apis/projects';
 import { ProjectListItem } from "@/types/project";
 import Image from 'next/image';
 
@@ -53,8 +53,8 @@ function ProjectLink({ item }: { item: ProjectListItem }) {
 }
 
 export default async function ProjectList() {
-    const { projects: workProjects } = await getProjectListByCategory('work');
-    const { projects: toyProjects } = await getProjectListByCategory('toy');
+    const workProjects = await getProjectListByCategory('work');
+    const toyProjects = await getProjectListByCategory('toy');
 
     return (
         <div className="container py-6 md:py-8 lg:py-12">

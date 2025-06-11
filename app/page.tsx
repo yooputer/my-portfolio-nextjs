@@ -9,7 +9,7 @@ import withSlugs from 'rehype-slug';
 import withToc from '@stefanprobst/rehype-extract-toc';
 import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import { compile } from '@mdx-js/mdx';
-import { getAboutMeContent } from '@/lib/notion';
+import { getAboutMeContent } from '@/lib/apis/aboutme';
 import TableOfContentsLink from './_components/TableOfContentLink';
 
 export default async function AboutMe() {

@@ -1,4 +1,4 @@
-import { getProjectContentBySlug } from '@/lib/notion';
+import { getProjectContentBySlug } from '@/lib/apis/projects';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import rehypeSanitize from 'rehype-sanitize';
