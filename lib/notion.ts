@@ -4,6 +4,7 @@ import { ProjectListItem } from "@/types/project";
 import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { NotionToMarkdown } from 'notion-to-md';
 import { unstable_cache } from 'next/cache';
+import { SkillItem } from "@/types/skills";
 
 export const notion = new Client({
   auth: process.env.NOTION_TOKEN,
@@ -151,3 +152,81 @@ export const getProjectContentBySlug = async (slug: string): Promise<{
     markdown: parent,
   };
 };
+
+export const getSkills = async (): Promise<Record<string, SkillItem[]>> => {
+    const response = await notion.databases.query({
+      database_id: process.env.NOTION_SKILL_DATABASE_ID!,
+      sorts: [
+        {
+          property: 'Order',
+          direction: 'ascending',
+        },
+      ],
+      page_size: 20,
+    });
+
+    const skillMap:Record<string, SkillItem[]> = {};
+
+    response.results
+        .filter((page): page is PageObjectResponse => 'properties' in page)
+        .map(convertToSkillItem)
+        .forEach((item) => {
+          if (!skillMap[item.category]) {
+            skillMap[item.category] = [];
+          }
+          skillMap[item.category].push(item);
+        });
+
+    return skillMap;
+}
+
+function convertToSkillItem(page: PageObjectResponse): SkillItem {
+  const { properties } = page;
+
+  return {
+    id: page.id,
+    category: getSelectByPropertyName(properties, 'Category')?.name || '',
+    name: getTextByPropertyName(properties, 'Name'),
+    level: getMultiSelectByPropertyName(properties, 'Level'),
+    projects: getMultiSelectByPropertyName(properties, 'Projects'),
+    description: getTextByPropertyName(properties, 'Description'),
+    icon_key: getTextByPropertyName(properties, 'IconKey'),
+  };
+}
+
+function getTextByPropertyName(properties: PageObjectResponse['properties'], propertyName:string): string {
+  if (!properties[propertyName]) {
+    return '';
+  }
+
+  const type = properties[propertyName].type;
+
+  if (type === 'title' && properties[propertyName].title.length > 0) {
+    return properties[propertyName].title[0].plain_text ?? '';
+  } else if (type === 'rich_text' && properties[propertyName].rich_text.length > 0){
+    return properties[propertyName].rich_text[0].plain_text ?? '';
+  }
+
+  return '';
+}
+
+function getSelectByPropertyName(properties: PageObjectResponse['properties'], propertyName:string): null | MultiSelect {
+  if (!properties[propertyName] || properties[propertyName].type !== 'select' ) {
+    return null;
+  }
+
+  return  properties[propertyName].select;
+}
+
+function getMultiSelectByPropertyName(properties: PageObjectResponse['properties'], propertyName:string): MultiSelect[] {
+  if (!properties[propertyName] || properties[propertyName].type !== 'multi_select' ) {
+    return [];
+  }
+
+  const multiSelects: MultiSelect[] = properties[propertyName].multi_select.map((item: MultiSelect) => {
+        return { id: item.id, name: item.name, color: item.color }
+      }
+  )
+
+  return multiSelects;
+}
