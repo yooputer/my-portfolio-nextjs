@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { getProjectListByCategory } from '@/lib/apis/projects';
-import { ProjectListItem } from "@/types/project";
+import { ProjectItem } from "@/types/project";
 import Image from 'next/image';
 
 
-function ProjectLink({ item }: { item: ProjectListItem }) {
+function ProjectLink({ item }: { item: ProjectItem }) {
   return (
     <Link
       href={`/projects/${item.slug}`}

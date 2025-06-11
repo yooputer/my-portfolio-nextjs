@@ -1,5 +1,5 @@
 import type {PageObjectResponse} from "@notionhq/client/build/src/api-endpoints";
-import {ProjectListItem} from "@/types/project";
+import {ProjectItem} from "@/types/project";
 import {
     getContentByPageId,
     getCoverImage,
@@ -8,7 +8,7 @@ import {
     notion
 } from "@/lib/notion";
 
-function convertToProjectListItem(page: PageObjectResponse): ProjectListItem {
+function convertToProjectListItem(page: PageObjectResponse): ProjectItem {
     const { properties } = page;
 
     return {
@@ -21,7 +21,7 @@ function convertToProjectListItem(page: PageObjectResponse): ProjectListItem {
     };
 }
 
-export const getProjectListByCategory = async (category: string): Promise<ProjectListItem[]> => {
+export const getProjectListByCategory = async (category: string): Promise<ProjectItem[]> => {
     const response = await notion.databases.query({
         database_id: process.env.NOTION_PROJECT_DATABASE_ID!,
         filter: {

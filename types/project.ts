@@ -1,6 +1,6 @@
 import { MultiSelect } from "@/types/notion";
 
-export interface ProjectListItem {
+export interface ProjectItem {
     id: string;
     title: string;
     coverImage?: string;
