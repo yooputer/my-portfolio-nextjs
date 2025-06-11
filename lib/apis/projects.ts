@@ -8,7 +8,7 @@ import {
     notion
 } from "@/lib/notion";
 
-function convertToProjectListItem(page: PageObjectResponse): ProjectItem {
+function convertToProjectItem(page: PageObjectResponse): ProjectItem {
     const { properties } = page;
 
     return {
@@ -45,7 +45,7 @@ export const getProjectListByCategory = async (category: string): Promise<Projec
 
     const projects = response.results
         .filter((page): page is PageObjectResponse => 'properties' in page)
-        .map(convertToProjectListItem);
+        .map(convertToProjectItem);
 
     return projects;
 };
