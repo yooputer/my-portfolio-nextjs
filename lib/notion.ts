@@ -1,5 +1,6 @@
 import { Client } from '@notionhq/client';
-import { ProjectListItem, SkillTag } from "@/types/notion";
+import { MultiSelect } from "@/types/notion";
+import { ProjectListItem } from "@/types/project";
 import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { NotionToMarkdown } from 'notion-to-md';
 import { unstable_cache } from 'next/cache';
@@ -33,12 +34,6 @@ export const getSkillsContent = async (): Promise<{
   return getContentByPageId(process.env.NOTION_SKILLS_PAGE_ID || '');
 };
 
-interface MultiSelect {
-  id: string;
-  name: string;
-  color?: string;
-}
-
 function convertToProjectListItem(page: PageObjectResponse): ProjectListItem {
   const { properties } = page;
 
@@ -55,12 +50,12 @@ function convertToProjectListItem(page: PageObjectResponse): ProjectListItem {
     }
   };
 
-  function getSkillTags(properties: PageObjectResponse['properties']): SkillTag[] {
+  function getSkillTags(properties: PageObjectResponse['properties']): MultiSelect[] {
     if (!properties.skills || properties.skills.type !== 'multi_select' ) {
       return [];
     }
 
-    const skillTags: SkillTag[] = properties.skills.multi_select.map((item: MultiSelect) => {
+    const skillTags: MultiSelect[] = properties.skills.multi_select.map((item: MultiSelect) => {
           return { id: item.id, name: item.name, color: item.color }
         }
     )

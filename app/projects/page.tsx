@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { getProjectListByCategory } from '@/lib/notion';
-import { ProjectListItem } from "@/types/notion";
+import { ProjectListItem } from "@/types/project";
 import Image from 'next/image';
 
 
