@@ -1,6 +1,6 @@
 import ProfileSection from '@/app/_components/ProfileSection';
 import ContactSection from '@/app/_components/ContactSection';
-import Link from 'next/link';
+import PageLayout from '@/app/_components/PageLayout';
 import { Separator } from '@/components/ui/separator';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
@@ -24,47 +24,36 @@ export default async function AboutMe() {
     ],
   });
 
-  return (
-    <div className="container py-6 md:py-8 lg:py-12">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-[240px_1fr_240px] md:gap-8">
-        {/* 왼쪽 사이드바 */}
-        <div className="hidden md:block">
-          <div className="sticky top-16">
-            <div className="bg-muted/60 space-y-4 rounded-lg p-6 backdrop-blur-sm">
-
-              <h3 className="text-lg font-semibold">About Me</h3>
-
-              <nav className="space-y-3 text-sm">
-                {data?.toc?.map((item) => <TableOfContentsLink key={item.id} item={item} />)}
-              </nav>
-            </div>
-          </div>
-        </div>
-
-        {/* 메인 컨텐츠 */}
-        <div>
-          <div className="prose prose-neutral dark:prose-invert prose-headings:scroll-mt-[var(--header-height)] max-w-none [&>h1:first-of-type]:hidden [&_code]:bg-[rgba(135,131,120,.15)] [&_code]:text-red-400 [&_code]:rounded-sm [&_code]:px-2 [&_code]:py-1 [&_code]:before:content-none [&_code]:after:content-none">
-            <MDXRemote
-              source={markdown}
-              options={{
-                mdxOptions: {
-                  remarkPlugins: [remarkGfm],
-                  rehypePlugins: [withSlugs, rehypeSanitize],
-                },
-              }}
-            />
-          </div>
-          <Separator className="my-16" />
-        </div>
-
-        {/* 오른쪽 사이드바 */}
-        <div className="hidden md:block">
-          <div className="top-4 space-y-6">
-            <ProfileSection />
-            <ContactSection />
-          </div>
-        </div>
-      </div>
+  const leftSidebar = (
+    <div className="bg-muted/60 space-y-4 rounded-lg p-6 backdrop-blur-sm">
+      <h3 className="text-lg font-semibold">About Me</h3>
+      <nav className="space-y-3 text-sm">
+        {data?.toc?.map((item) => <TableOfContentsLink key={item.id} item={item} />)}
+      </nav>
     </div>
+  );
+
+  const rightSidebar = (
+    <>
+      <ProfileSection />
+      <ContactSection />
+    </>
+  );
+
+  return (
+    <PageLayout leftSidebar={leftSidebar} rightSidebar={rightSidebar}>
+      <div className="prose prose-neutral dark:prose-invert prose-headings:scroll-mt-[var(--header-height)] max-w-none [&>h1:first-of-type]:hidden [&_code]:bg-[rgba(135,131,120,.15)] [&_code]:text-red-400 [&_code]:rounded-sm [&_code]:px-2 [&_code]:py-1 [&_code]:before:content-none [&_code]:after:content-none">
+        <MDXRemote
+          source={markdown}
+          options={{
+            mdxOptions: {
+              remarkPlugins: [remarkGfm],
+              rehypePlugins: [withSlugs, rehypeSanitize],
+            },
+          }}
+        />
+      </div>
+      <Separator className="my-16" />
+    </PageLayout>
   );
 }

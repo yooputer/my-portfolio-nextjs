@@ -1,9 +1,9 @@
-import Link from 'next/link';
+import PageLayout from '@/app/_components/PageLayout';
 import { Separator } from '@/components/ui/separator';
 import { getProjectListByCategory } from '@/lib/apis/projects';
 import { ProjectItem } from "@/types/project";
 import Image from 'next/image';
-
+import Link from 'next/link';
 
 function ProjectLink({ item }: { item: ProjectItem }) {
   return (
@@ -57,45 +57,28 @@ export default async function ProjectList() {
     const toyProjects = await getProjectListByCategory('toy');
 
     return (
-        <div className="container py-6 md:py-8 lg:py-12">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-[240px_1fr_240px] md:gap-8">
-                {/* 왼쪽 사이드바 */}
-                <div className="hidden md:block">
-                    <div className="sticky top-16">
-                    </div>
-                </div>
-
-                {/* 메인 컨텐츠 */}
+        <PageLayout>
+            <div>
+                <h1 className="text-3xl font-bold mb-4">Work</h1>
                 <div>
-                    <div>
-                        <h1 className="text-3xl font-bold mb-4">Work</h1>
-                        <div>
-                            {workProjects.map((project) => (
-                                <ProjectLink key={project.id} item={project} />
-                            ))}
-                        </div>
-                    </div>
-                    
-                    <Separator className="my-10" />
-
-                    <div>
-                        <h1 className="text-3xl font-bold mb-4">Toy Projects</h1>
-                        <div>
-                            {toyProjects.map((project) => (
-                                <ProjectLink key={project.id} item={project} />
-                            ))}
-                        </div>
-                    </div>
-                    
-                    <Separator className="my-10" />
-                </div>
-
-                {/* 오른쪽 사이드바 */}
-                <div className="hidden md:block">
-                    <div className="top-4 space-y-6">
-                    </div>
+                    {workProjects.map((project) => (
+                        <ProjectLink key={project.id} item={project} />
+                    ))}
                 </div>
             </div>
-        </div>
+            
+            <Separator className="my-10" />
+
+            <div>
+                <h1 className="text-3xl font-bold mb-4">Toy Projects</h1>
+                <div>
+                    {toyProjects.map((project) => (
+                        <ProjectLink key={project.id} item={project} />
+                    ))}
+                </div>
+            </div>
+            
+            <Separator className="my-10" />
+        </PageLayout>
     );
 }
