@@ -52,33 +52,36 @@ function ProjectLink({ item }: { item: ProjectItem }) {
   );
 }
 
+function ProjectSection({ title, projects }: { title: string; projects: ProjectItem[] }) {
+  return (
+    <div>
+      <h1 className="text-3xl font-bold mb-4">{title}</h1>
+      <div>
+        {projects.map((project) => (
+          <ProjectLink key={project.id} item={project} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default async function ProjectList() {
-    const workProjects = await getProjectListByCategory('work');
-    const toyProjects = await getProjectListByCategory('toy');
+  const workProjects = await getProjectListByCategory('work');
+  const toyProjects = await getProjectListByCategory('toy');
 
-    return (
-        <PageLayout>
-            <div>
-                <h1 className="text-3xl font-bold mb-4">Work</h1>
-                <div>
-                    {workProjects.map((project) => (
-                        <ProjectLink key={project.id} item={project} />
-                    ))}
-                </div>
-            </div>
-            
-            <Separator className="my-10" />
+  const sections = [
+    { title: 'Work', projects: workProjects },
+    { title: 'Toy Projects', projects: toyProjects }
+  ];
 
-            <div>
-                <h1 className="text-3xl font-bold mb-4">Toy Projects</h1>
-                <div>
-                    {toyProjects.map((project) => (
-                        <ProjectLink key={project.id} item={project} />
-                    ))}
-                </div>
-            </div>
-            
-            <Separator className="my-10" />
-        </PageLayout>
-    );
+  return (
+    <PageLayout>
+      {sections.map((section, index) => (
+        <div key={index}>
+          <ProjectSection title={section.title} projects={section.projects} />
+          {index < sections.length - 1 && <Separator className="my-10" />}
+        </div>
+      ))}
+    </PageLayout>
+  );
 }
