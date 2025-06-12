@@ -4,7 +4,7 @@ import { SkillItem } from "@/types/skills";
 
 function SkillCard({ item }: { item: SkillItem }) {
   return (
-    <div className="flex flex-col gap-3 p-4 rounded-lg border border-border hover:border-primary/50 transition-colors">
+    <div className="flex flex-col gap-2 p-4 rounded-lg border border-border hover:border-primary/50 transition-colors">
         <div className="flex flex-wrap gap-2 items-center">
             { item.icon_url && (
                 <img src={item.icon_url} alt={item.name}
@@ -29,7 +29,7 @@ function SkillCard({ item }: { item: SkillItem }) {
         ))}
       </div>
 
-      {item.description && (<p className="text-muted-foreground text-sm mt-2">{item.description}</p>)}
+      {item.description && (<p className="text-muted-foreground text-sm">{item.description}</p>)}
     </div>
   );
 }
