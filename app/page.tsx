@@ -1,5 +1,4 @@
 import ProfileSection from '@/app/_components/ProfileSection';
-import ContactSection from '@/app/_components/ContactSection';
 import PageLayout from '@/app/_components/PageLayout';
 import { Separator } from '@/components/ui/separator';
 import { MDXRemote } from 'next-mdx-remote/rsc';
