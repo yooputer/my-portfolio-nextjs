@@ -5,12 +5,16 @@ import { SkillItem } from "@/types/skills";
 function SkillCard({ item }: { item: SkillItem }) {
   return (
     <div className="flex flex-col gap-3 p-4 rounded-lg border border-border hover:border-primary/50 transition-colors">
-      <div className="flex flex-wrap gap-2 items-center">
-        <h3 className="text-lg font-semibold overflow-auto wrap-break-word">{item.name}</h3>
-      </div>
+        <div className="flex flex-wrap gap-2 items-center">
+            { item.icon_url && (
+                <img src={item.icon_url} alt={item.name}
+                     width="30" height="30"/>
+            )}
+            <h3 className="text-lg font-semibold overflow-auto wrap-break-word">{item.name}</h3>
+        </div>
 
-      <div className="flex flex-wrap gap-1.5">
-        {item.level.map((level) => (
+        <div className="flex flex-wrap gap-1.5">
+            {item.level.map((level) => (
           <span key={level.id} className="px-1.5 py-0.5 text-sm rounded-md bg-primary/10 text-primary">
             {level.name}
           </span>

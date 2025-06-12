@@ -7,5 +7,5 @@ export interface SkillItem {
     level: MultiSelect[];
     projects: MultiSelect[];
     description?: string;
-    icon_key: string;
+    icon_url: string;
 }

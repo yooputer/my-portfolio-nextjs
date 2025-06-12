@@ -12,7 +12,7 @@ function convertToSkillItem(page: PageObjectResponse): SkillItem {
         level: getMultiSelectByPropertyName(properties, 'Level'),
         projects: getMultiSelectByPropertyName(properties, 'Projects'),
         description: getTextByPropertyName(properties, 'Description'),
-        icon_key: getTextByPropertyName(properties, 'IconKey'),
+        icon_url: getTextByPropertyName(properties, 'IconURL'),
     };
 }
 
