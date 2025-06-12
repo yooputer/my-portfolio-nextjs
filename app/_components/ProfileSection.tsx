@@ -1,4 +1,4 @@
-import { Code, Github, FolderHeart, Instagram } from 'lucide-react';
+import {Code, Github, FolderHeart, Mail} from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ProfileImage } from '@/components/ProfileImage';
@@ -14,16 +14,25 @@ const socialLinks = [
     icon: Github,
     label: '깃허브',
     href: 'https://github.com/yooputer',
+    newTab: true,
   },
   {
     icon: Code,
     label: '개발블로그',
     href: 'https://yooputer-devlog.tistory.com/',
+    newTab: true,
   },
   {
     icon: FolderHeart,
     label: '일상블로그',
     href: 'https://blog.naver.com/rladbwls027',
+    newTab: true,
+  },
+  {
+    icon: Mail,
+    label: 'Email',
+    href: 'mailto:yooputer@gmail.com',
+    newTab: false,
   },
 ];
 
@@ -51,8 +60,8 @@ export default function ProfileSection() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" className="bg-primary/10" size="icon" asChild>
-                      <a href={item.href} target="_blank" rel="noopener noreferrer">
-                        <item.icon className="h-4 w-4" />
+                      <a href={item.href} target={item.newTab ? '_blank' : '_top'} rel="noopener noreferrer">
+                        <item.icon className="h-4 w-4"/>
                       </a>
                     </Button>
                   </TooltipTrigger>
