@@ -8,7 +8,7 @@ export default function Header() {
         <div className="grid w-full grid-cols-3 items-center">
           <div className="flex items-center justify-start">
             <Link href="/" className="text-xl font-semibold">
-              <span className="font-bold">Portfolio</span>
+              <span className="font-bold">✨Portfolio</span>
             </Link>
           </div>
           <nav className="flex items-center justify-center gap-4">
