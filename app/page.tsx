@@ -36,7 +36,6 @@ export default async function AboutMe() {
   const rightSidebar = (
     <>
       <ProfileSection />
-      <ContactSection />
     </>
   );
 
