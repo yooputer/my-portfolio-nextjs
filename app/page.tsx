@@ -39,6 +39,30 @@ function MainContent({ markdown }: { markdown: string }) {
   );
 }
 
+function AboutMeSkeleton() {
+  return (
+    <PageLayout
+      leftSidebar={<div className="animate-pulse bg-muted/60 rounded-lg p-6 h-[400px]" />}
+      rightSidebar={<ProfileSection />}
+    >
+      <div className="animate-pulse space-y-6">
+        <div className="h-8 w-3/4 bg-muted rounded" />
+        <div className="space-y-4">
+          <div className="h-4 w-full bg-muted rounded" />
+          <div className="h-4 w-5/6 bg-muted rounded" />
+          <div className="h-4 w-4/6 bg-muted rounded" />
+        </div>
+        <div className="h-64 w-full bg-muted rounded" />
+        <div className="space-y-4">
+          <div className="h-4 w-full bg-muted rounded" />
+          <div className="h-4 w-5/6 bg-muted rounded" />
+          <div className="h-4 w-4/6 bg-muted rounded" />
+        </div>
+      </div>
+    </PageLayout>
+  );
+}
+
 async function AboutMeContent() {
   const { markdown } = await getAboutMeContent();
   const { data } = await compile(markdown, {
@@ -52,16 +76,10 @@ async function AboutMeContent() {
 
   return (
     <PageLayout
-      leftSidebar={
-        <Suspense fallback={<div className="animate-pulse bg-muted/60 rounded-lg p-6 h-[200px]" />}>
-          <LeftSidebarContent data={data} />
-        </Suspense>
-      }
+      leftSidebar={<LeftSidebarContent data={data} />}
       rightSidebar={<ProfileSection />}
     >
-      <Suspense fallback={<div className="animate-pulse bg-muted/60 rounded-lg p-6 h-[400px]" />}>
-        <MainContent markdown={markdown} />
-      </Suspense>
+      <MainContent markdown={markdown} />
       <Separator className="my-16" />
     </PageLayout>
   );
@@ -69,14 +87,7 @@ async function AboutMeContent() {
 
 export default function AboutMe() {
   return (
-    <Suspense fallback={
-      <PageLayout
-        leftSidebar={<div className="animate-pulse bg-muted/60 rounded-lg p-6 h-[400px]" />}
-        rightSidebar={<ProfileSection />}
-      >
-        <div className="animate-pulse bg-muted/60 rounded-lg p-6 h-[600px]" />
-      </PageLayout>
-    }>
+    <Suspense fallback={<AboutMeSkeleton />}>
       <AboutMeContent />
     </Suspense>
   );

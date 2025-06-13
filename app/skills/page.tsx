@@ -57,34 +57,38 @@ function SkillCardSkeleton() {
   );
 }
 
-async function SkillSection() {
-  const skillMap = await getSkills();
-
+function SkillSectionSkeleton() {
   return (
-    <div className="space-y-4">
-        {Object.entries(skillMap).map(([category, items]) => (
-            <div key={category} className="space-y-4">
-                <h2 className="text-2xl font-bold">{category}</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-5">
-                    {items.map(item => (
-                        <SkillCard item={item} key={item.id} />
-                    ))}
-                </div>
-            </div>
-        ))}
+    <div className="space-y-8">
+      {[1, 2, 3].map((sectionIndex) => (
+        <div key={sectionIndex} className="space-y-4">
+          <div className="h-8 w-48 bg-muted rounded" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-5">
+            {[1, 2, 3, 4].map((i) => (
+              <SkillCardSkeleton key={i} />
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
 
-function SkillSectionSkeleton() {
+async function SkillContent() {
+  const skillMap = await getSkills();
+
   return (
-    <div className="space-y-4">
-      <div className="h-8 w-48 bg-muted rounded" />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-5">
-        {[1, 2, 3, 4].map((i) => (
-          <SkillCardSkeleton key={i} />
-        ))}
-      </div>
+    <div className="space-y-8">
+      {Object.entries(skillMap).map(([category, items]) => (
+        <div key={category} className="space-y-4">
+          <h2 className="text-2xl font-bold">{category}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-5">
+            {items.map(item => (
+              <SkillCard item={item} key={item.id} />
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -92,11 +96,9 @@ function SkillSectionSkeleton() {
 export default function Skill() {
   return (
     <PageLayout>
-      <div className="space-y-8">
-          <Suspense fallback={<SkillSectionSkeleton />}>
-              <SkillSection />
-          </Suspense>
-      </div>
+      <Suspense fallback={<SkillSectionSkeleton />}>
+        <SkillContent />
+      </Suspense>
     </PageLayout>
   );
 }
