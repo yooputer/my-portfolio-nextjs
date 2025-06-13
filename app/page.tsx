@@ -10,10 +10,37 @@ import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import { compile } from '@mdx-js/mdx';
 import { getAboutMeContent } from '@/lib/apis/aboutme';
 import TableOfContentsLink from './_components/TableOfContentLink';
+import { Suspense } from 'react';
 
-export default async function AboutMe() {
+function LeftSidebarContent({ data }: { data: { toc?: any[] } }) {
+  return (
+    <div className="bg-muted/60 space-y-4 rounded-lg p-6 backdrop-blur-sm">
+      <h3 className="text-lg font-semibold">About Me</h3>
+      <nav className="space-y-3 text-sm">
+        {data?.toc?.map((item) => <TableOfContentsLink key={item.id} item={item} />)}
+      </nav>
+    </div>
+  );
+}
+
+function MainContent({ markdown }: { markdown: string }) {
+  return (
+    <div className="prose prose-neutral dark:prose-invert prose-headings:scroll-mt-[var(--header-height)] max-w-none [&>h1:first-of-type]:hidden [&_code]:bg-[rgba(135,131,120,.15)] [&_code]:text-red-400 [&_code]:rounded-sm [&_code]:px-2 [&_code]:py-1 [&_code]:before:content-none [&_code]:after:content-none">
+      <MDXRemote
+        source={markdown}
+        options={{
+          mdxOptions: {
+            remarkPlugins: [remarkGfm],
+            rehypePlugins: [withSlugs, rehypeSanitize],
+          },
+        }}
+      />
+    </div>
+  );
+}
+
+async function AboutMeContent() {
   const { markdown } = await getAboutMeContent();
-
   const { data } = await compile(markdown, {
     rehypePlugins: [
       withSlugs,
@@ -23,35 +50,34 @@ export default async function AboutMe() {
     ],
   });
 
-  const leftSidebar = (
-    <div className="bg-muted/60 space-y-4 rounded-lg p-6 backdrop-blur-sm">
-      <h3 className="text-lg font-semibold">About Me</h3>
-      <nav className="space-y-3 text-sm">
-        {data?.toc?.map((item) => <TableOfContentsLink key={item.id} item={item} />)}
-      </nav>
-    </div>
-  );
-
-  const rightSidebar = (
-    <>
-      <ProfileSection />
-    </>
-  );
-
   return (
-    <PageLayout leftSidebar={leftSidebar} rightSidebar={rightSidebar}>
-      <div className="prose prose-neutral dark:prose-invert prose-headings:scroll-mt-[var(--header-height)] max-w-none [&>h1:first-of-type]:hidden [&_code]:bg-[rgba(135,131,120,.15)] [&_code]:text-red-400 [&_code]:rounded-sm [&_code]:px-2 [&_code]:py-1 [&_code]:before:content-none [&_code]:after:content-none">
-        <MDXRemote
-          source={markdown}
-          options={{
-            mdxOptions: {
-              remarkPlugins: [remarkGfm],
-              rehypePlugins: [withSlugs, rehypeSanitize],
-            },
-          }}
-        />
-      </div>
+    <PageLayout
+      leftSidebar={
+        <Suspense fallback={<div className="animate-pulse bg-muted/60 rounded-lg p-6 h-[200px]" />}>
+          <LeftSidebarContent data={data} />
+        </Suspense>
+      }
+      rightSidebar={<ProfileSection />}
+    >
+      <Suspense fallback={<div className="animate-pulse bg-muted/60 rounded-lg p-6 h-[400px]" />}>
+        <MainContent markdown={markdown} />
+      </Suspense>
       <Separator className="my-16" />
     </PageLayout>
+  );
+}
+
+export default function AboutMe() {
+  return (
+    <Suspense fallback={
+      <PageLayout
+        leftSidebar={<div className="animate-pulse bg-muted/60 rounded-lg p-6 h-[400px]" />}
+        rightSidebar={<ProfileSection />}
+      >
+        <div className="animate-pulse bg-muted/60 rounded-lg p-6 h-[600px]" />
+      </PageLayout>
+    }>
+      <AboutMeContent />
+    </Suspense>
   );
 }
