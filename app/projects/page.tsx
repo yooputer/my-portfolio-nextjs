@@ -4,6 +4,7 @@ import { getProjectListByCategory } from '@/lib/apis/projects';
 import { ProjectItem } from "@/types/project";
 import Image from 'next/image';
 import Link from 'next/link';
+import { Suspense } from 'react';
 
 function ProjectLink({ item }: { item: ProjectItem }) {
   return (
@@ -65,23 +66,56 @@ function ProjectSection({ title, projects }: { title: string; projects: ProjectI
   );
 }
 
-export default async function ProjectList() {
-  const workProjects = await getProjectListByCategory('work');
-  const toyProjects = await getProjectListByCategory('toy');
+function ProjectSkeleton() {
+  return (
+    <div className="flex gap-6 p-4 rounded-lg border border-border">
+      <div className="w-[35%] h-32 bg-muted rounded-md" />
+      <div className="flex-1 space-y-3">
+        <div className="h-6 w-3/4 bg-muted rounded" />
+        <div className="flex gap-2">
+          {[1, 2, 3].map((j) => (
+            <div key={j} className="h-6 w-16 bg-muted rounded-full" />
+          ))}
+        </div>
+        <div className="h-4 w-full bg-muted rounded" />
+      </div>
+    </div>
+  );
+}
 
-  const sections = [
-    { title: 'Work', projects: workProjects },
-    { title: 'Toy Projects', projects: toyProjects }
-  ];
+function ProjectSectionSkeleton() {
+  return (
+    <div className="animate-pulse space-y-4">
+      <div className="h-8 w-48 bg-muted rounded" />
+      <div className="space-y-6">
+        {[1, 2, 3].map((i) => (
+          <ProjectSkeleton key={i} />
+        ))}
+      </div>
+    </div>
+  );
+}
 
+async function WorkProjects() {
+  const projects = await getProjectListByCategory('work');
+  return <ProjectSection title="Work" projects={projects} />;
+}
+
+async function ToyProjects() {
+  const projects = await getProjectListByCategory('toy');
+  return <ProjectSection title="Toy Projects" projects={projects} />;
+}
+
+export default function ProjectList() {
   return (
     <PageLayout>
-      {sections.map((section, index) => (
-        <div key={index}>
-          <ProjectSection title={section.title} projects={section.projects} />
-          {index < sections.length - 1 && <Separator className="my-10" />}
-        </div>
-      ))}
+      <Suspense fallback={<ProjectSectionSkeleton />}>
+        <WorkProjects />
+      </Suspense>
+      <Separator className="my-10" />
+      <Suspense fallback={<ProjectSectionSkeleton />}>
+        <ToyProjects />
+      </Suspense>
     </PageLayout>
   );
 }
