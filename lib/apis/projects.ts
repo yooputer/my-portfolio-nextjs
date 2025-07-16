@@ -80,3 +80,24 @@ export const getProjectContentBySlug = async (slug: string): Promise<{
 
     return getContentByPageId(pageId);
 };
+
+export const getProjectSlugs = async () => {
+    const response = await notion.databases.query({
+        database_id: process.env.NOTION_PROJECT_DATABASE_ID!,
+        page_size: 20,
+    });
+
+    if (!response.results){
+        return [];
+    }
+
+    const slugs = response.results
+        .filter((page): page is PageObjectResponse => 'properties' in page)
+        .map((page) => {
+            const { properties } = page;
+
+            return getTextByPropertyName(properties, 'slug');
+    });
+
+    return slugs;
+}

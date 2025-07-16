@@ -1,4 +1,4 @@
-import { getProjectContentBySlug } from '@/lib/apis/projects';
+import {getProjectContentBySlug, getProjectSlugs} from '@/lib/apis/projects';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import rehypeSanitize from 'rehype-sanitize';
@@ -67,4 +67,14 @@ export default async function ProjectList({ params }: ProjectDetailProps) {
             </div>
         </PageLayout>
     );
+}
+
+export async function generateStaticParams() {
+    const slugs = await getProjectSlugs();
+
+    return slugs.map(slug => ({
+        params: {
+            slug: slug,
+        },
+    }));
 }
