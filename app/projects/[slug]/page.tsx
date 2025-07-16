@@ -34,7 +34,7 @@ async function ProjectContent({ slug }: { slug: string }) {
   const { markdown } = await getProjectContentBySlug(slug);
   
   return (
-    <div className="prose prose-neutral dark:prose-invert prose-headings:scroll-mt-[var(--header-height)] max-w-none">
+    <div key={`project-detail-${slug}`} className="prose prose-neutral dark:prose-invert prose-headings:scroll-mt-[var(--header-height)] max-w-none">
       <MDXRemote
         source={markdown}
         options={{
